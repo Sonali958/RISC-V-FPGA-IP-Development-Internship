@@ -237,7 +237,7 @@ This command was used to navigate through the assembly output page by page.
 | Optimization Level | Number of Instructions in `<main>` |
 |-------------------|-------------------------------------|
 | O1 | 15 |
-| Ofast | 11 |
+| Ofast | 12 |
 
 ### Observation
 
@@ -251,7 +251,7 @@ The assembly generated using the `-Ofast` optimization level was more optimized 
 | ---------------------------------- | -------------------------------------------------------- | ----------------------------------------------- |
 | Optimization Level                 | Moderate optimization                                    | Aggressive optimization                         |
 | Primary Objective                  | Improve performance while maintaining safe optimizations | Maximize execution speed                        |
-| Number of Instructions in `<main>` | **15**                                                   | **11**                                          |
+| Number of Instructions in `<main>` | **15**                                                   | **12*                                          |
 | Assembly Code Size                 | Larger                                                   | Smaller                                         |
 | Generated Code Efficiency          | Moderate                                                 | Higher                                          |
 | Compiler Optimization              | Basic optimization techniques                            | Advanced optimization techniques |
