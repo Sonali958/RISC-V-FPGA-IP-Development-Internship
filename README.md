@@ -7,7 +7,7 @@
 Documentation of internship tasks, FPGA implementations, simulations, and learning outcomes.
 
 ![Status](https://img.shields.io/badge/Status-In%20Progress-success)
-![FPGA](https://img.shields.io/badge/Platform-VSDSquadron-blue)
+![FPGA](https://img.shields.io/badge/Board-VSDSquadron-blue)
 ![Architecture](https://img.shields.io/badge/Architecture-RISC--V-orange)
 
 </div>
@@ -30,12 +30,27 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 
 ---
 
+
+## 🛠️ Tools Used
+
+- Oracle VirtualBox
+- Ubuntu Linux
+- Git
+- GitHub
+- VS Code
+- GCC Compiler
+- Verilog HDL
+- VSDSquadron FPGA
+
+
+---
+
 ## 📊 Internship Progress
 
 | Task | Status |
 |--------|--------|
 | Task 1 | ✔ Completed |
-| Task 2 | ⏳ In Progress |
+| Task 2 | ✔ Completed |
 
 
 ---
@@ -274,25 +289,43 @@ The assembly generated using the `-Ofast` optimization level was more optimized 
 # Task 2
 
 <details>
-<summary><b> Task 2</b></summary>
+<summary><b>Task 2: SPIKE Simulation and Debugging using RISC-V GCC</b></summary>
 
-Content will be added after completion.
+### 📄 Detailed Documentation - It is in the Task 2 folder of the repository
 
-</details>
+👉 **[Click here to view the Task 2 Documentation](Task2/README.md)**
+
+This task focuses on understanding the complete RISC-V software development flow using the RISC-V GCC toolchain and the SPIKE RISC-V ISA simulator. It includes C program verification, RISC-V cross-compilation, simulation, debugging, and digital design application implementation.
 
 ---
 
+### Task 2A: RISC-V Toolchain Setup, Compilation, Simulation and Instruction Analysis
 
-## 🛠️ Tools Used
+This part focuses on exploring the complete RISC-V software execution flow, starting from a high-level C program and moving towards low-level instruction analysis.
 
-- Oracle VirtualBox
-- Ubuntu Linux
-- Git
-- GitHub
-- VS Code
-- GCC Compiler
-- Verilog HDL
-- VSDSquadron FPGA
+It includes:
+
+* Compilation and verification of a C program using GCC.
+* Cross-compilation of the program using `riscv64-unknown-elf-gcc`.
+* Execution of the generated RISC-V binary using the SPIKE RISC-V ISA simulator.
+* Generation and analysis of RISC-V assembly instructions using Objdump.
+* Instruction-level debugging using SPIKE debug mode.
+* Understanding the working and format of RISC-V instructions such as LUI and ADDI.
+
+---
+
+### Task 2B: Digital Design Application using C
+
+This part focuses on developing a digital design application in C and validating its functionality across the RISC-V software flow.
+
+It includes:
+
+* Designing and implementing a application using C programming.
+* Functional verification of the application using the GCC compiler.
+* Cross-compilation of the application for the RISC-V architecture.
+* Execution and validation of the generated RISC-V binary using the SPIKE simulator..
+
+</details>
 
 ---
 
