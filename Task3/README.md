@@ -273,20 +273,11 @@ This provided an understanding of how software firmware and hardware RTL coexist
 
 The reference RISC-V program is located inside the `samples` directory of the `vsd-riscv2` repository. During this task, the program sum1ton.c was used to verify the RISC-V execution flow.
 
-
-```text
-vsd-riscv2/
-└── samples/
-    └── sum1ton.c
-```
-
 ---
 
 ## 2. How is the RISC-V program compiled and loaded into memory?
 
-The program is compiled using the RISC-V GCC cross compiler (`riscv64-unknown-elf-gcc`) which converts C code into a RISC-V executable ELF file.
-
-The generated ELF file is then loaded by the Proxy Kernel (`pk`) and executed by the Spike RISC-V ISA simulator.
+The RISC-V program is compiled using RISC-V GCC cross compiler (i.e. riscv64-unknown-elf-gcc) which converts the c code to a RISC-V executable ELF file. The ELF file is further loaded by the proxy kernel (pk) and executed by Spike RISC-V ISA simulator. The command which was used was - riscv64-unknown-elf-gcc -o sum1ton.o sum1ton.c for the sum1ton.c file.
 
 The complete flow is: C source code → RISC-V compiler → ELF executable → Proxy Kernel → Spike simulator → program execution.
 
@@ -312,7 +303,7 @@ This mechanism allows software running on the RISC-V core to control external ha
 
 ## 4. Where would a new FPGA IP block logically integrate in this system?
 
-A new FPGA IP block would be integrated as a memory-mapped peripheral connected to the system bus.
+A new FPGA IP block would be integrated as a memory mapped peripheral connected to the system bus.
 
 The RISC-V processor would communicate with this IP block through dedicated address locations by performing the read and write operations.
 
