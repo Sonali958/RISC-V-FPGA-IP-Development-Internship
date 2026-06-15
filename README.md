@@ -51,7 +51,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 |--------|--------|
 | Task 1 | ✔ Completed |
 | Task 2 | ✔ Completed |
-
+| Task 3 | ✔ Completed |
 
 ---
 
@@ -59,7 +59,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 
 - [Task 1](#task-1)
 - [Task 2](#task-2)
-
+- [Task 3](#task-3)
 ---
 
 # Task 1
@@ -324,6 +324,50 @@ It includes:
 * Functional verification of the application using the GCC compiler.
 * Cross-compilation of the application for the RISC-V architecture.
 * Execution and validation of the generated RISC-V binary using the SPIKE simulator..
+
+</details>
+
+---
+
+# Task 3
+
+<details>
+<summary><b>Task 3: Environment Setup and RISC-V Reference Bring-Up</b></summary>
+
+### 📄 Detailed Documentation - It is in the Task 3 folder of the repository
+
+👉 **[Click here to view the Task 3 Documentation](Task3/README.md)**
+
+This task focuses on establishing a complete RISC-V development environment and validating the software execution flow before moving towards FPGA and IP development. It includes GitHub Codespace setup, RISC-V toolchain verification, reference program execution, VSDFPGA firmware validation, and local development environment preparation.
+
+---
+
+### Task 3A: GitHub Codespace Setup and RISC-V Reference Flow
+
+This part focuses on setting up the official RISC-V development environment and verifying the complete software execution flow.
+
+It includes:
+
+* Setting up the GitHub Codespace environment.
+* Verifying the RISC-V GCC cross-compiler, SPIKE RISC-V ISA simulator, and Icarus Verilog.
+* Compiling and executing the `sum1ton.c` RISC-V reference program.
+* Modifying the reference program and validating the changed output.
+* Understanding the RISC-V compilation and simulation flow.
+
+---
+
+### Task 3B: VSDFPGA Lab Execution and Local Environment Preparation
+
+This part focuses on exploring the VSDFPGA repository, validating the firmware flow, and preparing the local development environment.
+
+It includes:
+
+* Cloning and exploring the `vsdfpga_labs` repository.
+* Understanding the firmware structure and generating the BRAM HEX file.
+* Executing the firmware using the SPIKE simulator.
+* Studying the Docker environment and understanding required development tools.
+* Preparing a local Ubuntu VirtualBox environment and cloning the required repositories.
+* Understanding memory-mapped I/O and FPGA IP integration concepts.
 
 </details>
 
