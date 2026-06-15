@@ -57,9 +57,10 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 
 ## 📑 Table of Contents
 
-- [Task 1](#task-1)
-- [Task 2](#task-2)
-- [Task 3](#task-3)
+- [Task 1: RISC-V Environment Setup & Reference Bring-Up](#task-1)
+- [Task 2: SPIKE Simulation and Debugging using RISC-V GCC](Task2/README.md)
+- [Task 3: Environment Setup and RISC-V Reference Bring-Up](Task3/README.md)
+
 ---
 
 # Task 1
