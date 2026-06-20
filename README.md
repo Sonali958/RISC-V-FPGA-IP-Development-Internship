@@ -52,6 +52,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 | Task 1 | ✔ Completed |
 | Task 2 | ✔ Completed |
 | Task 3 | ✔ Completed |
+| Task 4 | ✔ Completed |
 
 ---
 
@@ -60,7 +61,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 - [Task 1: RISC-V Environment Setup & Reference Bring-Up](#task-1)
 - [Task 2: SPIKE Simulation and Debugging using RISC-V GCC](Task2/README.md)
 - [Task 3: Environment Setup and RISC-V Reference Bring-Up](Task3/README.md)
-
+- [Task 4: Design and Integrate your first Memory-mapped IO](Task3/README.md)
 ---
 
 # Task 1
@@ -369,6 +370,98 @@ It includes:
 * Studying the Docker environment and understanding required development tools.
 * Preparing a local Ubuntu VirtualBox environment and cloning the required repositories.
 * Understanding memory-mapped I/O and FPGA IP integration concepts.
+
+</details>
+
+---
+
+# Task 4
+
+<details>
+<summary><b>Task 4: GPIO Peripheral Integration and Firmware Validation on a RISC-V SoC</b></summary>
+
+### 📄 Detailed Documentation - It is in the Task 4 folder of the repository
+
+👉 **[Click here to view the Task 4 Documentation](Task4/README.md)**
+
+This task focuses on extending the RISC-V SoC by designing, integrating, and validating a custom GPIO (General Purpose Input/Output) peripheral. The complete hardware-software co-design flow was explored, starting from peripheral creation in Verilog, integration into the memory-mapped I/O subsystem, firmware development, and FPGA bitstream generation.
+
+---
+
+### Task 4A: Analysis of Existing Memory-Mapped Peripherals
+
+This part focuses on understanding the existing SoC architecture and the mechanism used for communication between the processor and peripherals.
+
+It includes:
+
+* Studying the memory-mapped I/O architecture of the RISC-V SoC.
+* Understanding RAM and I/O address decoding.
+* Analyzing existing peripherals such as LEDs and UART.
+* Understanding memory read and write transactions.
+* Examining how peripherals are connected to the processor through the memory bus.
+* Identifying the integration points required for adding a new peripheral.
+
+---
+
+### Task 4B: GPIO Peripheral Design and Integration
+
+This part focuses on creating a custom GPIO peripheral and integrating it into the SoC memory map.
+
+It includes:
+
+* Designing a GPIO peripheral in Verilog.
+* Implementing GPIO register storage logic.
+* Supporting memory-mapped read operations.
+* Supporting memory-mapped write operations.
+* Adding a dedicated GPIO address space.
+* Creating GPIO write-enable control logic.
+* Instantiating the GPIO module inside the SoC.
+* Extending the I/O read-data multiplexer to support GPIO reads.
+* Verifying successful integration through RTL compilation.
+
+---
+
+### Task 4C: GPIO Firmware Development and Validation
+
+This part focuses on developing firmware that communicates with the newly integrated GPIO peripheral.
+
+It includes:
+
+* Understanding the firmware build environment.
+* Updating the memory-mapped I/O definitions in `io.h`.
+* Creating a dedicated GPIO test application.
+* Performing GPIO write operations from software.
+* Performing GPIO read operations from software.
+* Verifying correct GPIO functionality through read-back validation.
+* Generating firmware executable and HEX memory images.
+
+---
+
+### Task 4D: FPGA Build Flow and Bitstream Generation
+
+This part focuses on rebuilding the complete RISC-V SoC after GPIO integration and generating the FPGA programming file.
+
+It includes:
+
+* Compiling the modified hardware design using Yosys.
+* Performing place-and-route using nextpnr-ice40.
+* Running timing analysis using icetime.
+* Generating FPGA configuration files.
+* Creating the final FPGA bitstream (`SOC.bin`).
+* Verifying successful synthesis and timing closure.
+* Confirming that the GPIO integration does not violate the original timing requirements of the design.
+
+---
+
+### Key Outcomes
+
+* Successfully designed a custom GPIO peripheral.
+* Integrated GPIO into the memory-mapped I/O subsystem.
+* Implemented software-controlled GPIO read/write functionality.
+* Generated firmware images for the RISC-V processor.
+* Successfully synthesized the modified SoC.
+* Achieved timing closure at the target clock frequency.
+* Generated a valid FPGA bitstream (`SOC.bin`) for deployment on the VSDSquadron FPGA Mini board.
 
 </details>
 
