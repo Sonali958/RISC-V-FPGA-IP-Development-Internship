@@ -61,7 +61,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 - [Task 1: RISC-V Environment Setup & Reference Bring-Up](#task-1)
 - [Task 2: SPIKE Simulation and Debugging using RISC-V GCC](Task2/README.md)
 - [Task 3: Environment Setup and RISC-V Reference Bring-Up](Task3/README.md)
-- [Task 4: Design and Integrate your first Memory-mapped IO](Task3/README.md)
+- [Task 4: Design and Integrate your first Memory-mapped IO](Task4/README.md)
 ---
 
 # Task 1
