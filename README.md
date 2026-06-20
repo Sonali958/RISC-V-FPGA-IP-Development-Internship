@@ -437,7 +437,7 @@ It includes:
 
 ---
 
-### Task 4D: FPGA Build Flow and Bitstream Generation
+### Task 4D: FPGA Build Flow and Bitstream Generation and GTKWaveform generation
 
 This part focuses on rebuilding the complete RISC-V SoC after GPIO integration and generating the FPGA programming file.
 
