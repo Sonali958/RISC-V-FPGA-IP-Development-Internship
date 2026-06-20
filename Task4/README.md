@@ -1480,8 +1480,200 @@ This confirms that the GPIO integration did not violate the timing requirements 
 
 ---
 
+---
+
+## Verification: GPIO Functional Simulation using Icarus Verilog and GTKWave
+
+To further validate the functionality of the newly integrated GPIO peripheral, a standalone Verilog testbench was created and simulated using **Icarus Verilog (iverilog)**. The generated waveform was then analyzed using **GTKWave**.
+
+This simulation verifies that:
+
+- The GPIO register is properly reset.
+- Data can be written into the GPIO register.
+- The written value is correctly stored.
+- The stored value can be read back through the GPIO read interface.
+
+---
+
+### Testbench Creation
+
+A dedicated testbench file `tb_gpio.v` was created to provide clock, reset, write-enable, and write-data stimuli to the GPIO module.
+
+The testbench performs the following sequence:
+
+1. Assert reset (`i_rst = 1`).
+2. Release reset after 20 ns.
+3. Apply a write operation with value `123` (`0x7B`).
+4. Deassert write enable.
+5. Generate a waveform file (`gpio.vcd`) for analysis.
+
+### Testbench Source
+
+```verilog
+`timescale 1ns/1ps
+
+module tb_gpio;
+
+reg i_clk;
+reg i_rst;
+reg i_we;
+reg [31:0] i_wdata;
+
+wire [31:0] o_rdata;
+wire [31:0] o_gpio;
+
+gpio dut (
+    .i_clk(i_clk),
+    .i_rst(i_rst),
+    .i_we(i_we),
+    .i_wdata(i_wdata),
+    .o_rdata(o_rdata),
+    .o_gpio(o_gpio)
+);
+
+always #5 i_clk = ~i_clk;
+
+initial begin
+    $dumpfile("gpio.vcd");
+    $dumpvars(0, tb_gpio);
+
+    i_clk = 0;
+    i_rst = 1;
+    i_we = 0;
+    i_wdata = 0;
+
+    #20;
+    i_rst = 0;
+
+    #10;
+    i_wdata = 32'd123;
+    i_we = 1;
+
+    #10;
+    i_we = 0;
+
+    #50;
+    $finish;
+end
+
+endmodule
+```
+
+---
+
+### Simulation Compilation and Execution
+
+The testbench and GPIO module were compiled and executed using Icarus Verilog.
+
+```bash
+iverilog -o gpio_sim tb_gpio.v gpio.v
+vvp gpio_sim
+```
+
+The simulation generated the waveform database file:
+
+```text
+gpio.vcd
+```
+
+which was opened using GTKWave.
+
+---
+
+### Testbench Creation and Configuration
+
+![GPIO Testbench](screenshots/Scc_29.png)
+
+**Figure:** Creation of the GPIO testbench (`tb_gpio.v`) used to stimulate the GPIO module and generate simulation waveforms.
+
+---
+
+### Simulation Compilation and Execution
+
+![Simulation Execution](screenshots/Scc_30.png)
+
+**Figure:** Successful compilation and execution of the GPIO simulation using Icarus Verilog. The waveform file `gpio.vcd` was generated successfully.
+
+---
+
+### GTKWave Simulation Result
+
+![GPIO Waveform](screenshots/Scc_31.png)
+
+**Figure:** GPIO simulation waveform displayed in GTKWave.
+
+---
+
+### Waveform Analysis
+
+The waveform demonstrates the following sequence:
+
+#### Reset Phase (0 ns – 20 ns)
+
+- `i_rst` remains high.
+- GPIO register remains in reset state.
+
+#### Write Operation (~30 ns)
+
+- `i_we` is asserted.
+- `i_wdata` is loaded with:
+
+```text
+0x0000007B
+```
+
+which corresponds to:
+
+```text
+123 (decimal)
+```
+
+#### GPIO Register Update
+
+After the next positive clock edge:
+
+```text
+o_gpio = 0x0000007B
+```
+
+This confirms that the GPIO register successfully captures the written data.
+
+#### Read Verification
+
+Simultaneously:
+
+```text
+o_rdata = 0x0000007B
+```
+
+This confirms that the stored GPIO value is correctly returned through the read interface.
+
+---
+
+### Verification Summary
+
+| Signal | Observed Value |
+|----------|----------|
+| Write Data (`i_wdata`) | 123 (`0x7B`) |
+| GPIO Output (`o_gpio`) | 123 (`0x7B`) |
+| Read Data (`o_rdata`) | 123 (`0x7B`) |
+
+---
+
+The simulation successfully verified the functionality of the GPIO peripheral.
+
+The waveform confirms that:
+
+- Data written to the GPIO register is stored correctly.
+- The GPIO output reflects the written value.
+- Read operations return the expected data.
+- The GPIO peripheral behaves as intended before deployment on FPGA hardware.
+
+This provides an additional level of validation beyond synthesis and bitstream generation and confirms the correctness of the GPIO design at the RTL level.
+
+---
+
 ## Conclusion
 
 In this step, a complete hardware-software co-design workflow was implemented. A custom GPIO peripheral was accessed through memory-mapped I/O using firmware running on the RISC-V processor. The firmware was compiled into a memory image, integrated into the SoC build flow, and successfully synthesized into an FPGA bitstream. The successful generation of `SOC.bin` and the timing report confirmed the correct integration of the GPIO peripheral into the RISC-V system.
 
-## For the Optional task, board not available
