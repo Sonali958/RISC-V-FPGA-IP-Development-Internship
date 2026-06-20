@@ -1483,3 +1483,5 @@ This confirms that the GPIO integration did not violate the timing requirements 
 ## Conclusion
 
 In this step, a complete hardware-software co-design workflow was implemented. A custom GPIO peripheral was accessed through memory-mapped I/O using firmware running on the RISC-V processor. The firmware was compiled into a memory image, integrated into the SoC build flow, and successfully synthesized into an FPGA bitstream. The successful generation of `SOC.bin` and the timing report confirmed the correct integration of the GPIO peripheral into the RISC-V system.
+
+## For the Optional task, board not available
