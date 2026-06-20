@@ -24,7 +24,7 @@ basicRISCV/RTL/
 
 ### Screenshot
 
-![RTL Files](Scc_1.png)
+![RTL Files](screenshots/Scc_1.png)
 
 ---
 
@@ -43,7 +43,7 @@ This file contains:
 
 ### Screenshot
 
-![Opening riscv.v](Scc_2.png)
+![Opening riscv.v](screenshots/Scc_2.png)
 
 ---
 
@@ -65,7 +65,7 @@ These signals form the communication interface between the processor and memory/
 
 ### Screenshot
 
-![Memory Signals](Scc_3.png)
+![Memory Signals](screenshots/Scc_3.png)
 
 ---
 
@@ -89,7 +89,7 @@ This mechanism allows peripherals to appear as memory locations from the process
 
 ### Screenshot
 
-![Address Decoding](Scc_4.png)
+![Address Decoding](screenshots/Scc_4.png)
 
 ---
 
@@ -163,7 +163,7 @@ The UART transmitter is implemented using the `emitter_uart.v` module.
 
 ### Screenshot
 
-![LED and UART Logic](Scc_5.png)
+![LED and UART Logic](screenshots/Scc_5.png)
 
 ---
 
