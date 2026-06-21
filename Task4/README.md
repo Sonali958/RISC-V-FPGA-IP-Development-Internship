@@ -1,4 +1,4 @@
-# Task 4: Design & Integrate Your First Memory-Mapped IP
+# Task 4: Design & Integrate First Memory-Mapped IP
 
 ## Step 1: Understanding the Existing SoC
 
