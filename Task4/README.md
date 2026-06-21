@@ -1455,28 +1455,6 @@ This confirms that the GPIO integration did not violate the timing requirements 
 
 ![Sc_29](screenshots/Scc_28.png)
 
----
-
-# Step 4 Outcome
-
-## Hardware Achievements
-
-- Successfully integrated GPIO peripheral into the RISC-V SoC.
-- Implemented memory-mapped read and write access.
-- Extended the I/O subsystem with a new GPIO address space.
-
-## Software Achievements
-
-- Created a dedicated GPIO test application.
-- Implemented memory-mapped GPIO write and read operations.
-- Verified correct software access methodology.
-
-## FPGA Implementation Achievements
-
-- Successfully generated firmware image.
-- Successfully rebuilt the modified SoC.
-- Achieved timing closure.
-- Generated FPGA bitstream (`SOC.bin`) without errors.
 
 ---
 
@@ -1535,6 +1513,73 @@ GPIO RTL TEST PASSED
 
 Simulation Finished.
 ```
+
+### Testbench for RTL simulation (`tb_gpio.v`)
+
+```verilog
+`timescale 1ns/1ps
+
+module tb_gpio;
+
+reg i_clk;
+reg i_rst;
+reg i_we;
+reg [31:0] i_wdata;
+
+wire [31:0] o_rdata;
+wire [31:0] o_gpio;
+
+gpio dut (
+    .i_clk(i_clk),
+    .i_rst(i_rst),
+    .i_we(i_we),
+    .i_wdata(i_wdata),
+    .o_rdata(o_rdata),
+    .o_gpio(o_gpio)
+);
+
+always #5 i_clk = ~i_clk;
+
+initial begin
+    $dumpfile("gpio.vcd");
+    $dumpvars(0, tb_gpio);
+
+    $display("====================================");
+    $display("       GPIO RTL SIMULATION");
+    $display("====================================");
+
+    i_clk = 0;
+    i_rst = 1;
+    i_we = 0;
+    i_wdata = 0;
+
+    #20;
+    i_rst = 0;
+
+    #10;
+    i_wdata = 32'd123;
+    i_we = 1;
+
+    #10;
+    i_we = 0;
+
+    #10;
+
+    $display("[%0t] GPIO Output = %0d", $time, o_gpio);
+    $display("[%0t] Read Data   = %0d", $time, o_rdata);
+
+    if (o_gpio == i_wdata && o_rdata == i_wdata)
+        $display("\nGPIO RTL TEST PASSED");
+    else
+        $display("\nGPIO RTL TEST FAILED");
+
+    #20;
+    $finish;
+end
+
+endmodule
+```
+
 
 ### Observation
 
@@ -1730,6 +1775,28 @@ The waveform confirms that:
 - The GPIO peripheral behaves as intended before deployment on FPGA hardware.
 
 This provides an additional level of validation beyond synthesis and bitstream generation and confirms the correctness of the GPIO design at the RTL level.
+
+---
+# Step 4 Outcome
+
+## Hardware Achievements
+
+- Successfully integrated GPIO peripheral into the RISC-V SoC.
+- Implemented memory-mapped read and write access.
+- Extended the I/O subsystem with a new GPIO address space.
+
+## Software Achievements
+
+- Created a dedicated GPIO test application.
+- Implemented memory-mapped GPIO write and read operations.
+- Verified correct software access methodology.
+
+## FPGA Implementation Achievements
+
+- Successfully generated firmware image.
+- Successfully rebuilt the modified SoC.
+- Achieved timing closure.
+- Generated FPGA bitstream (`SOC.bin`) without errors.
 
 ---
 
