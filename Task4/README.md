@@ -1480,6 +1480,66 @@ This confirms that the GPIO integration did not violate the timing requirements 
 
 ---
 
+## RTL Functional Verification of GPIO IP
+
+After integrating the GPIO peripheral into the RISC-V SoC, the GPIO module was functionally verified using **Icarus Verilog** and a custom Verilog testbench (`tb_gpio.v`).
+
+The objective of this simulation was to verify the functionality of the GPIO IP independently before deploying it as part of the complete SoC.
+
+### Test Flow
+
+The GPIO module was instantiated in a dedicated testbench, where the following sequence of operations was performed:
+
+- Reset the GPIO module.
+- Release the reset signal.
+- Write the value **123** to the GPIO register.
+- Disable the write enable signal.
+- Read back the GPIO output and register data.
+- Compare the read value with the written value.
+- Display the simulation result on the terminal.
+
+### Simulation Commands
+
+```bash
+iverilog -o gpio_sim tb_gpio.v gpio.v
+vvp gpio_sim
+```
+
+### RTL Simulation Output
+
+The terminal output confirms that:
+
+- Reset was successfully applied.
+- The value **123** was written into the GPIO register.
+- The GPIO output correctly reflected the written value.
+- The read-back data matched the stored value.
+- The GPIO module passed functional verification.
+
+<p align="center">
+ <img width="346" height="93" alt="Sc_32" src="https://github.com/user-attachments/assets/3719d9da-af9e-40cc-8c36-59eacc94c466" />
+
+</p>
+
+### Simulation Result
+
+```
+GPIO RTL SIMULATION
+
+[0] Reset Asserted
+[2000] Reset Released
+[3000] Writing Value = 123
+[5000] GPIO Output = 123
+[5000] Read Data = 123
+
+GPIO RTL TEST PASSED
+
+Simulation Finished.
+```
+
+### Observation
+
+The RTL simulation verifies the correct functionality of the standalone GPIO IP. The successful write and read-back operations demonstrate that the GPIO register logic, write enable control, and output interface operate as expected before deployment in the complete RISC-V SoC.
+
 ---
 
 ## Verification: GPIO Functional Simulation using Icarus Verilog and GTKWave
