@@ -53,6 +53,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 | Task 2 | ✔ Completed |
 | Task 3 | ✔ Completed |
 | Task 4 | ✔ Completed |
+| Task 5 | ✔ Completed |
 
 ---
 
@@ -62,6 +63,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 - [Task 2: SPIKE Simulation and Debugging using RISC-V GCC](Task2/README.md)
 - [Task 3: Environment Setup and RISC-V Reference Bring-Up](Task3/README.md)
 - [Task 4: Design and Integrate your first Memory-mapped IO](Task4/README.md)
+- [Task 5: Design a Multi-Register GPIO IP with Software Control](Task5/README.md)
 ---
 
 # Task 1
@@ -466,6 +468,97 @@ It includes:
 </details>
 
 ---
+
+# Task 5
+
+<details>
+<summary><b>Task 5: Design a Multi-Register GPIO IP with Software Control</b></summary>
+
+### 📄 Detailed Documentation - It is in the Task 5 folder of the repository
+
+👉 **[Click here to view the Task 5 Documentation](Task5/README.md)**
+
+This task focuses on validating the GPIO peripheral integrated into the RISC-V SoC through both software and hardware verification. The complete verification flow includes firmware development, memory-mapped register configuration, RTL simulation using Icarus Verilog, waveform analysis using GTKWave, FPGA synthesis, bitstream generation, and programming the VSDSquadron FPGA Mini board.
+
+---
+
+### Task 5A: GPIO Firmware Development
+
+This part focuses on creating firmware that communicates with the GPIO peripheral through memory-mapped I/O.
+
+It includes:
+
+* Developing a dedicated GPIO test application (`gpio_test.c`).
+* Updating the GPIO register definitions inside `io.h`.
+* Configuring GPIO pin directions through the GPIO Direction Register.
+* Writing data to the GPIO Data Register.
+* Reading back GPIO registers to verify correct functionality.
+* Performing software-based validation using PASS/FAIL checks.
+* Generating the firmware executable and BRAM HEX image.
+
+---
+
+### Task 5B: Firmware Integration and SoC Rebuild
+
+This part focuses on integrating the newly generated firmware into the RISC-V SoC.
+
+It includes:
+
+* Generating `gpio_test.bram.hex`.
+* Updating `firmware.hex` with the latest firmware image.
+* Updating `firmware.txt` to reference the generated firmware.
+* Rebuilding the complete SoC using the modified firmware.
+* Running synthesis, place-and-route, timing analysis, and bitstream generation.
+
+---
+
+### Task 5C: RTL Simulation and Functional Verification
+
+This part focuses on validating the GPIO peripheral functionality before hardware execution.
+
+It includes:
+
+* Developing a dedicated Verilog testbench (`tb_gpio.v`).
+* Simulating reset, write, and read operations.
+* Compiling the RTL design using Icarus Verilog (`iverilog`).
+* Running simulations using `vvp`.
+* Generating a VCD waveform file.
+* Verifying successful GPIO operation through simulation logs.
+* Confirming correct GPIO register behaviour.
+
+---
+
+### Task 5D: GTKWave Analysis and FPGA Programming
+
+This part focuses on visual verification and hardware deployment of the complete design.
+
+It includes:
+
+* Opening the generated VCD waveform in GTKWave.
+* Analysing clock, reset, GPIO write, and GPIO read operations.
+* Verifying GPIO output transitions through waveform inspection.
+* Programming the VSDSquadron FPGA Mini board using `iceprog`.
+* Verifying successful FPGA programming through **VERIFY OK**.
+* Checking FPGA USB connectivity and serial interface detection.
+
+---
+
+### Key Outcomes
+
+* Successfully developed firmware for GPIO validation.
+* Implemented memory-mapped GPIO register access through software.
+* Generated updated firmware memory images for the RISC-V processor.
+* Successfully rebuilt the modified RISC-V SoC.
+* Developed and executed an RTL testbench for GPIO verification.
+* Verified GPIO functionality using Icarus Verilog simulation.
+* Analysed GPIO operation through GTKWave waveforms.
+* Successfully synthesized the design and generated the FPGA bitstream (`SOC.bin`).
+* Successfully programmed the VSDSquadron FPGA Mini board and verified FPGA configuration.
+
+</details>
+
+---
+
 
 
 ## 👩‍💻 Author
