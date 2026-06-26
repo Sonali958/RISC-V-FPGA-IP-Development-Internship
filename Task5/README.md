@@ -1,5 +1,5 @@
 
-# Task 3: Design a Multi-Register GPIO IP with Software Control
+# Task 5: Design a Multi-Register GPIO IP with Software Control
 
 ## Step 1: Study and Planning
 
