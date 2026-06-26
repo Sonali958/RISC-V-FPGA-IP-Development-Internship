@@ -512,3 +512,408 @@ The SoC is now fully prepared for software validation using a C test program in 
 
 ---
 
+# Step 4: Firmware Development, RTL Simulation and FPGA Programming
+
+## Objective
+
+After successfully integrating the GPIO peripheral into the RISC-V SoC, the next objective was to verify its functionality using both software and hardware.
+
+The verification process involved:
+
+- Developing a dedicated firmware application to test all GPIO registers.
+- Defining the GPIO register map.
+- Compiling the firmware into a BRAM initialization file.
+- Rebuilding the SoC with the updated firmware.
+- Verifying FPGA detection and programming.
+- Creating an RTL testbench for functional simulation.
+- Simulating the GPIO module using Icarus Verilog.
+- Analysing the generated waveform using GTKWave.
+
+---
+
+# 4.1 Firmware Development
+
+A dedicated firmware program (`gpio_test.c`) was developed to validate all three GPIO registers.
+
+The program performs the following sequence:
+
+- Configures all GPIO pins as outputs by writing to the GPIO Direction Register.
+- Writes a known value (123) into the GPIO Data Register.
+- Reads back the Direction Register.
+- Reads back the Data Register.
+- Reads the GPIO Read Register.
+- Compares the returned values with the expected values.
+- Prints PASS/FAIL messages for every individual test.
+- Displays the final GPIO test result.
+
+### Screenshot
+
+![](screenshots/10th.png)
+![](screenshots/11th.png)
+
+---
+
+The complete source code is shown below.
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include "io.h"
+
+int main()
+{
+    uint32_t dir_value = 0xFFFFFFFF;
+    uint32_t data_value = 123;
+    uint32_t read_value;
+
+    printf("\n");
+    printf("===================================\n");
+    printf("     GPIO Task-3 Software Test\n");
+    printf("===================================\n");
+
+    //--------------------------------------------------
+    // Test 1
+    //--------------------------------------------------
+
+    printf("\n[TEST 1] Configure GPIO Direction\n");
+
+    IO_OUT(IO_GPIO_DIR, dir_value);
+
+    printf("GPIO_DIR Written : %u\n", dir_value);
+    printf("GPIO_DIR Read    : %u\n", IO_IN(IO_GPIO_DIR));
+
+    if(IO_IN(IO_GPIO_DIR) == dir_value)
+        printf("Direction Register : PASS\n");
+    else
+        printf("Direction Register : FAIL\n");
+
+    //--------------------------------------------------
+    // Test 2
+    //--------------------------------------------------
+
+    printf("\n[TEST 2] Write GPIO Data\n");
+
+    IO_OUT(IO_GPIO_DATA, data_value);
+
+    printf("GPIO_DATA Written : %u\n", data_value);
+    printf("GPIO_DATA Read    : %u\n", IO_IN(IO_GPIO_DATA));
+
+    if(IO_IN(IO_GPIO_DATA) == data_value)
+        printf("Data Register : PASS\n");
+    else
+        printf("Data Register : FAIL\n");
+
+    //--------------------------------------------------
+    // Test 3
+    //--------------------------------------------------
+
+    printf("\n[TEST 3] Read GPIO State\n");
+
+    read_value = IO_IN(IO_GPIO_READ);
+
+    printf("GPIO_READ Value : %u\n", read_value);
+
+    if(read_value == data_value)
+        printf("Readback Register : PASS\n");
+    else
+        printf("Readback Register : FAIL\n");
+
+    //--------------------------------------------------
+
+    printf("===================================\n");
+
+    if(read_value == data_value)
+        printf(" GPIO TASK-3 TEST PASSED\n");
+    else
+        printf(" GPIO TASK-3 TEST FAILED\n");
+
+    printf("===================================\n");
+
+    while(1);
+
+    return 0;
+}
+```
+
+---
+
+# 4.2 GPIO Register Definitions
+
+The firmware communicates with the GPIO peripheral through memory-mapped I/O registers.
+
+The register addresses were defined inside **io.h**.
+
+| Register | Address |
+|-----------|----------|
+| GPIO_DATA | 0x20 |
+| GPIO_DIR | 0x24 |
+| GPIO_READ | 0x28 |
+
+The macros `IO_IN()` and `IO_OUT()` are used to access these registers through volatile memory operations.
+
+![](screenshots/12th.png)
+
+---
+
+# 4.3 Firmware Compilation
+
+The firmware was compiled using the RISC-V GNU toolchain.
+
+Compilation command:
+
+```bash
+make gpio_test.bram.hex
+```
+
+During compilation:
+
+- Source files were compiled into object files.
+- Object files were linked together.
+- An ELF executable was generated.
+- The ELF image was converted into a BRAM initialization HEX file.
+- The generated HEX file was automatically copied into the RTL directory.
+
+The final firmware image generated was:
+
+```
+gpio_test.bram.hex
+```
+
+### Screenshot
+
+![](screenshots/13th.png)
+
+---
+
+# 4.4 Updating the RTL Firmware
+
+After successful compilation, the generated firmware was copied into the RTL project.
+
+The file
+
+```
+firmware.txt
+```
+
+was updated to point towards
+
+```
+gpio_test.bram.hex
+```
+
+This ensures that during synthesis the RISC-V processor boots using the newly generated firmware.
+
+The generated firmware image was also verified inside the RTL directory.
+
+### Screenshot
+
+![](screenshots/13th.png)
+
+### Screenshot
+
+![](screenshots/14th.png)
+
+---
+
+# 4.5 Rebuilding the SoC
+
+Once the firmware was updated, the entire SoC was rebuilt.
+
+Command used:
+
+```bash
+make
+```
+
+This process performed:
+
+- Logic synthesis using Yosys
+- Place-and-route using nextpnr
+- Timing analysis using icetime
+- Bitstream generation using icepack
+
+A new FPGA bitstream (`SOC.bin`) was generated containing the updated firmware.
+
+### Screenshot
+
+![](screenshots/15th.png)
+
+---
+
+# 4.6 FPGA Detection
+
+Before programming the FPGA, the USB interface was verified.
+
+The following commands were used:
+
+```bash
+lsusb
+```
+
+```bash
+ls /dev/ttyUSB* /dev/ttyACM*
+```
+
+The FT232H USB-UART interface of the VSDSquadron FPGA Mini board was successfully detected.
+
+The Linux system also created the serial device
+
+```
+/dev/ttyUSB0
+```
+
+confirming successful USB communication.
+
+### Screenshot
+
+![](screenshots/16th.png)
+
+---
+
+# 4.7 FPGA Programming
+
+The generated bitstream was programmed into the FPGA using:
+
+```bash
+sudo iceprog SOC.bin
+```
+
+Programming completed successfully.
+
+Important observations:
+
+- Flash erase completed.
+- Bitstream programming completed.
+- Read-back verification passed.
+- Device verification reported **VERIFY OK**.
+
+This confirmed that the FPGA was successfully programmed with the updated SoC containing the GPIO firmware.
+
+### Screenshot
+
+![](screenshots/17th.png)
+![](screenshots/22nd.png)
+
+---
+
+# 4.8 RTL Functional Verification
+
+Although hardware programming verifies successful FPGA configuration, RTL simulation provides functional verification of the GPIO module before hardware execution.
+
+A dedicated Verilog testbench (`tb_gpio.v`) was developed.
+
+The testbench performs:
+
+- Reset sequence
+- GPIO_DATA write
+- GPIO_DIR write
+- GPIO_DATA read
+- GPIO_DIR read
+- GPIO_READ read
+- PASS/FAIL verification
+- Waveform dumping
+
+### Screenshot of testbench
+
+![](screenshots/18th.png)
+![](screenshots/19th.png)
+
+
+---
+
+# 4.9 RTL Compilation
+
+The GPIO module and testbench were compiled using Icarus Verilog.
+
+Compilation command:
+
+```bash
+iverilog -g2012 -o gpio_sim tb_gpio.v gpio.v
+```
+
+The compiler successfully generated the simulation executable
+
+```
+gpio_sim
+```
+
+The simulation was executed using
+
+```bash
+vvp gpio_sim
+```
+
+Simulation output:
+
+```
+GPIO_DATA = 123
+GPIO_DIR = ffffffff
+GPIO_READ = 123
+
+GPIO RTL TEST PASSED
+```
+
+The simulation also generated the waveform file
+
+```
+gpio.vcd
+```
+
+### Screenshot
+
+![](screenshots/20th.png)
+
+---
+
+# 4.10 GTKWave Analysis
+
+The generated VCD file was opened using GTKWave.
+
+```bash
+gtkwave gpio.vcd
+```
+
+The waveform confirms:
+
+- Reset operation
+- Clock generation
+- GPIO_DATA write
+- GPIO_DIR write
+- GPIO_READ operation
+- Correct GPIO output generation
+- Correct register readback
+
+The waveform clearly demonstrates that the GPIO peripheral behaves exactly as intended.
+
+
+### Waveform Observations
+
+- During reset, all GPIO registers initialize to zero.
+- The DATA register captures the value **123** after the write operation.
+- The DIR register stores **0xFFFFFFFF**, configuring all GPIO pins as outputs.
+- The READ register correctly returns the output data because every pin is configured as an output.
+- The simulation ends with **GPIO RTL TEST PASSED**, confirming correct functional behaviour.
+
+### Screenshot
+
+![](screenshots/21st.png)
+
+---
+
+# Conclusion
+
+The GPIO peripheral was successfully verified through both firmware generation and RTL simulation.
+
+The following milestones were successfully completed:
+
+- GPIO firmware developed.
+- GPIO register map defined.
+- Firmware compiled successfully.
+- Firmware integrated into the SoC.
+- FPGA bitstream generated.
+- FPGA successfully programmed.
+- RTL simulation completed.
+- Waveforms verified using GTKWave.
+- All GPIO read/write operations produced the expected behaviour.
+
+These results confirm that the GPIO peripheral is correctly integrated with the RISC-V SoC and operates as intended under both software and RTL simulation.
