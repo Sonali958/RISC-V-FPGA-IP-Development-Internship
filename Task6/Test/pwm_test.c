@@ -221,22 +221,24 @@ int main()
     printf("PASS : %u\n",pass);
     printf("FAIL : %u\n",fail);
 
-    if(fail==0)
-        printf("PWM VERIFIED\n");
-    else
-        printf("PWM FAILED\n");
+    printf("\nStarting Hardware Demonstration...\n");
 
-    while(1);
+IO_OUT(IO_PWM_PERIOD, 100);
+IO_OUT(IO_PWM_CTRL, PWM_EN);
 
-    return 0;
+// 20% Duty Cycle
+printf("Duty Cycle = 20%%\n");
+IO_OUT(IO_PWM_DUTY, 20);
 
-    IO_OUT(IO_PWM_PERIOD, 100);
-    IO_OUT(IO_PWM_DUTY, 50);
-    IO_OUT(IO_PWM_CTRL, 1);
+delay();
 
-    while(1);
+// 80% Duty Cycle
+printf("Duty Cycle = 80%%\n");
+IO_OUT(IO_PWM_DUTY, 80);
 
-    return 0;
+while(1);
+
+return 0;
 
 }
 
