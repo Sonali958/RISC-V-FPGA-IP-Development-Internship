@@ -1,4 +1,4 @@
-# PWM IP Development for RISC-V SoC
+<img width="316" height="188" alt="image" src="https://github.com/user-attachments/assets/a53be900-ec24-4b0f-9b0e-617f7e1068a8" /># PWM IP Development for RISC-V SoC
 
 > Core Contributor Task – Real Peripheral IP Development
 
@@ -266,11 +266,7 @@ The processor communicates with the module using a simple memory-mapped interfac
 
 **Figure 1** shows the module declaration and interface of the PWM IP.
 
-> **Insert Screenshot 1 here**
-
-```markdown
-![module declaration](screenshots/scree1.png)
-```
+![Figure 1: PWM Module Declaration](screenshots/scree1.png)
 
 The interface consists of:
 
@@ -290,11 +286,9 @@ This interface enables seamless integration with the existing SoC memory bus.
 
 The PWM IP internally maintains four software-accessible registers together with the PWM counter and intermediate waveform generation logic.
 
-> **Insert Screenshot 2 here**
 
-```markdown
 ![Figure 2: Internal Registers and Register Write Logic](screenshots/scree2.png)
-```
+
 
 The register write logic updates the selected register whenever the write enable signal is asserted. Register selection is determined by the address lines, allowing software to independently configure the control, period, and duty cycle registers.
 
@@ -304,11 +298,9 @@ The register write logic updates the selected register whenever the write enable
 
 The PWM counter forms the core of the peripheral.
 
-> **Insert Screenshot 3 here**
 
-```markdown
-![Figure 3: PWM Counter and Waveform Generation](screenshots/scree3.png)
-```
+![Figure 3: PWM Counter and Waveform Generation](screenshots/scree2.png)
+
 
 During operation, the counter increments on every clock cycle until the programmed period value is reached. Once the terminal count is reached, the counter resets and starts counting again, thereby generating a continuous PWM period.
 
@@ -320,11 +312,9 @@ The output waveform is produced by comparing the counter value against the progr
 
 The PWM peripheral also provides a read interface for software verification.
 
-> **Insert Screenshot 4 here**
 
-```markdown
-![Figure 4: Status Register and Read Logic](Task6/screenshots/scree4.png)
-```
+![Figure 4: Status Register and Read Logic](screenshots/scree3.png)
+
 
 The STATUS register reports whether the PWM module is currently enabled and also provides the current value of the PWM counter. This information is useful during software testing and debugging. The read logic multiplexes the appropriate register onto the read data bus based on the selected register address, enabling firmware to verify configuration values and monitor peripheral operation.
 
@@ -369,7 +359,7 @@ This command compiles the PWM RTL (`pwm.v`) together with the verification testb
 
 ### Figure 5 – RTL Compilation
 
-![Figure 5: Compiling the PWM RTL and Testbench](screenshots/screen5.png)
+![Figure 5: Compiling the PWM RTL and Testbench](screenshots/scree4.png)
 
 The compilation completed successfully, indicating that the RTL module and testbench were syntactically correct and ready for simulation.
 
@@ -389,7 +379,7 @@ The simulator applies various test cases to the PWM module and prints the verifi
 
 ### Figure 6 – Simulation Execution
 
-![Figure 6: PWM Verification Log](screenshots/screen6.png)
+![Figure 6: PWM Verification Log](screenshots/scree5.png)
 
 The simulation log displays the execution of different verification tests along with their PASS status.
 
@@ -441,7 +431,7 @@ Each register was subsequently read back to ensure the written values were corre
 
 ### Figure 7 – Register Write Verification
 
-![Figure 7: Register Write Test](screenshots/screen7.png)
+![Figure 7: Register Write Test](screenshots/screen5.png)
 
 The successful PASS messages indicate that all writable registers correctly accepted and stored the programmed values.
 
@@ -462,7 +452,7 @@ The following registers were validated:
 
 ### Figure 8 – Register Read Verification
 
-![Figure 8: Register Read Test](screenshots/screen8.png)
+![Figure 8: Register Read Test](screenshots/scree6.png)
 
 The returned values exactly matched the programmed register contents, confirming correct read functionality.
 
@@ -526,9 +516,9 @@ The simulation verified that the PWM module handled this condition correctly wit
 
 ---
 
-### Figure 9 – PWM Functional Verification
+### Figure 9 – Duty Cycle Verification
 
-![Figure 9: Boundary Condition Tests](screenshots/screen9.png)
+![Figure 9: Boundary Condition Tests](screenshots/scree7.png)
 
 The verification log confirms successful execution of all duty-cycle boundary tests.
 
@@ -574,7 +564,8 @@ The counter value increased continuously while the PWM module remained enabled, 
 
 ### Figure 10 – Final Verification Results
 
-![Figure 10: Verification Summary](screenshots/screen10.png)
+![Figure 10: Verification Summary](screenshots/scree8.png)
+![Figure 10: Verification Summary](screenshots/scree9.png)
 
 The verification summary indicates that every functional test completed successfully.
 
@@ -604,7 +595,8 @@ The waveform contains:
 
 ### Figure 11 – Initial GTKWave Analysis
 
-![Figure 11: Initial PWM Waveform](screenshots/screen11.png)
+![Figure 11: Initial PWM Waveform](screenshots/scree10.png)
+![Figure 11: Initial PWM Waveform](screenshots/scree11.png)
 
 The waveform shows the register programming sequence and corresponding updates in the internal signals.
 
@@ -612,7 +604,7 @@ The waveform shows the register programming sequence and corresponding updates i
 
 ### Figure 12 – Complete PWM Waveform
 
-![Figure 12: Complete PWM Signal Analysis](screenshots/screen12.png)
+![Figure 12: Complete PWM Signal Analysis](screenshots/scree12.png)
 
 The waveform confirms that:
 
@@ -683,7 +675,7 @@ This makes the PWM module available during synthesis and allows it to be instant
 
 ## Figure 13 – PWM Module Included
 
-![Figure 13](screenshots/screen13.png)
+![Figure 13](screenshots/scree13.png)
 
 ---
 
@@ -724,7 +716,8 @@ This signal becomes active only when:
 
 ## Figure 14 – PWM Address Decoding
 
-![Figure 14](screenshots/screen14.png)
+![Figure 14](screenshots/scree14.png)
+![Figure 14](screenshots/scree15.png)
 
 The address decoder ensures that write requests intended for other peripherals do not affect the PWM registers.
 
@@ -771,7 +764,7 @@ to the system bus.
 
 ## Figure 15 – PWM Module Instantiation
 
-![Figure 15](screenshots/screen15.png)
+![Figure 15](screenshots/scree16.png)
 
 This modular approach makes the PWM peripheral reusable in future designs with minimal changes.
 
@@ -800,7 +793,7 @@ This allows software to read the CTRL, PERIOD, DUTY and STATUS registers exactly
 
 ## Figure 16 – Read Data Multiplexer
 
-![Figure 16](screenshots/screen16.png)
+![Figure 16](screenshots/scree16.png)
 
 ---
 
@@ -890,7 +883,7 @@ This sequence validates the complete hardware-software interaction between the p
 
 ## Figure 18 – Firmware Execution
 
-![Figure 18](screenshots/screen18.png)
+![Figure 18](screenshots/scree18.png)
 
 The successful execution of the firmware confirms that the processor can configure the PWM peripheral, access its registers, and monitor its operation through the memory-mapped interface.
 
@@ -968,16 +961,31 @@ This transfers the generated bitstream into the VSDSquadron FM board, allowing t
 
 # Hardware Validation
 
-The FPGA implementation was verified by programming the generated bitstream into the development board and observing the PWM-controlled RGB LED.
+After successful synthesis and FPGA programming, the PWM peripheral was validated on the **VSDSquadron FM FPGA board**.
 
-The validation confirms that:
+The firmware configured the PWM peripheral through memory-mapped registers by programming different duty-cycle values while keeping the PWM period constant. The generated PWM output was routed to the onboard RGB LED to demonstrate hardware operation.
 
-- The SoC boots successfully.
-- The PWM peripheral is correctly integrated.
-- Software communicates with the PWM registers through memory-mapped I/O.
-- The PWM output is successfully routed to the FPGA output.
+The hardware validation confirms that:
 
-The successful FPGA implementation demonstrates that the RTL design is synthesizable and functional on physical hardware.
+- The RISC-V SoC was successfully programmed onto the FPGA.
+- The PWM peripheral was correctly integrated with the SoC.
+- Software was able to configure the PWM registers through memory-mapped I/O.
+- The generated PWM signal was successfully routed to the onboard RGB LED.
+- Changing the duty cycle altered the LED output, demonstrating correct PWM operation on hardware.
+
+### PWM Output with 20% Duty Cycle
+
+The firmware configured the PWM duty cycle to **20%**, resulting in a shorter HIGH duration during each PWM period. This represents a lower duty-cycle configuration.
+
+![Figure 18: RGB LED operating with 20% Duty Cycle](screenshots/scree19.png)
+
+---
+
+### PWM Output with 80% Duty Cycle
+
+The firmware was then updated to configure the PWM duty cycle to **80%**, increasing the HIGH duration within each PWM period and demonstrating successful software control of the PWM output.
+
+![Figure 19: RGB LED operating with 80% Duty Cycle](screenshots/scree20.png)
 
 ---
 
