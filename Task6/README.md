@@ -7,7 +7,6 @@
 # Table of Contents
 
 - Introduction
-- Project Objective
 - What is PWM?
 - PWM Working Principle
 - Design Features
@@ -27,23 +26,6 @@ The complete design includes RTL development, SoC integration, software validati
 
 ---
 
-# Project Objective
-
-The primary objective of this task is to design and integrate a reusable PWM peripheral that can be controlled by software executing on the RISC-V processor.
-
-The implementation consists of the following stages:
-
-- Design the PWM peripheral in Verilog HDL.
-- Implement configurable control and status registers.
-- Integrate the PWM module into the existing SoC.
-- Access the peripheral using memory-mapped I/O.
-- Develop firmware to configure the PWM registers.
-- Verify functionality using simulation.
-- Validate the design on FPGA hardware.
-
-The final system demonstrates interaction between software and hardware through memory-mapped register access.
-
----
 
 # What is Pulse Width Modulation (PWM)?
 
@@ -59,27 +41,6 @@ The duty cycle is mathematically expressed as:
 Duty\ Cycle = \frac{High\ Time}{Total\ Period}\times100\%
 \]
 
----
-
-## Duty Cycle Illustration
-
-### 25% Duty Cycle
-
-```
-████____________
-```
-
-### 50% Duty Cycle
-
-```
-████████________
-```
-
-### 75% Duty Cycle
-
-```
-████████████____
-```
 
 As the duty cycle increases, the average output voltage also increases.
 
@@ -95,10 +56,6 @@ Typical applications include:
 - DC motor speed control
 - Servo motor positioning
 - Battery charging systems
-- Switching power supplies
-- Audio signal generation
-- Embedded control systems
-- Power electronics
 
 ---
 
@@ -679,20 +636,6 @@ This makes the PWM module available during synthesis and allows it to be instant
 
 ---
 
-# Memory-Mapped Addressing
-
-The SoC uses memory-mapped I/O to communicate with hardware peripherals.
-
-Whenever the processor accesses an address located within the I/O region, the corresponding peripheral is selected instead of RAM.
-
-A dedicated address region was assigned to the PWM peripheral.
-
-The processor accesses the PWM registers simply by performing normal read and write operations.
-
-This eliminates the need for any special communication protocol and provides a simple software programming model.
-
----
-
 # PWM Write Enable Generation
 
 The PWM peripheral should respond only when software performs a write operation to its assigned address space.
@@ -839,7 +782,7 @@ This provides confidence that both the software interface and the hardware imple
 
 ## Figure 17 – PWM Test Firmware
 
-![Figure 17](screenshots/screen17.png)
+![Figure 17](screenshots/scree17.png)
 
 The firmware demonstrates how software running on the RISC-V processor can configure and validate the PWM peripheral entirely through memory-mapped register accesses.
 
@@ -977,7 +920,7 @@ The hardware validation confirms that:
 
 The firmware configured the PWM duty cycle to **20%**, resulting in a shorter HIGH duration during each PWM period. This represents a lower duty-cycle configuration.
 
-![Figure 18: RGB LED operating with 20% Duty Cycle](screenshots/scree19.png)
+![Figure 19: RGB LED operating with 20% Duty Cycle](screenshots/scree19.jpeg)
 
 ---
 
@@ -985,7 +928,7 @@ The firmware configured the PWM duty cycle to **20%**, resulting in a shorter HI
 
 The firmware was then updated to configure the PWM duty cycle to **80%**, increasing the HIGH duration within each PWM period and demonstrating successful software control of the PWM output.
 
-![Figure 19: RGB LED operating with 80% Duty Cycle](screenshots/scree20.png)
+![Figure 20: RGB LED operating with 80% Duty Cycle](screenshots/scree20.jpeg)
 
 ---
 
