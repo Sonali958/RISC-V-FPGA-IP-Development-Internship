@@ -1,4 +1,4 @@
-<img width="316" height="188" alt="image" src="https://github.com/user-attachments/assets/a53be900-ec24-4b0f-9b0e-617f7e1068a8" /># PWM IP Development for RISC-V SoC
+# PWM IP Development for RISC-V SoC
 
 > Core Contributor Task – Real Peripheral IP Development
 
