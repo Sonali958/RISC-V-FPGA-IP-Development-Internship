@@ -54,6 +54,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 | Task 3 | ✔ Completed |
 | Task 4 | ✔ Completed |
 | Task 5 | ✔ Completed |
+| Task 6 | ✔ Completed |
 
 ---
 
@@ -64,6 +65,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 - [Task 3: Environment Setup and RISC-V Reference Bring-Up](Task3/README.md)
 - [Task 4: Design and Integrate your first Memory-mapped IO](Task4/README.md)
 - [Task 5: Design a Multi-Register GPIO IP with Software Control](Task5/README.md)
+- [Task 6: PWM IP design](Task6/README.md)
 ---
 
 # Task 1
@@ -559,6 +561,19 @@ It includes:
 
 ---
 
+# Task 5
+
+<details>
+<summary><b>Task 6: Design a PWM IP</b></summary>
+
+### 📄 Detailed Documentation - It is in the Task 6 folder of the repository
+
+👉 **[Click here to view the Task 6 Documentation](Task6/README.md)**
+
+
+</details>
+
+---
 
 
 ## 👩‍💻 Author
