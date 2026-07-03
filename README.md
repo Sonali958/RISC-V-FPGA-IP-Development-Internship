@@ -561,7 +561,7 @@ It includes:
 
 ---
 
-# Task 5
+# Task 6
 
 <details>
 <summary><b>Task 6: Design a PWM IP</b></summary>
@@ -569,6 +569,28 @@ It includes:
 ### 📄 Detailed Documentation - It is in the Task 6 folder of the repository
 
 👉 **[Click here to view the Task 6 Documentation](Task6/README.md)**
+
+Task 6 focused on the complete design, implementation, verification, and hardware validation of a **Pulse Width Modulation (PWM) Intellectual Property (IP)** core for a RISC-V based System-on-Chip (SoC). The objective was to develop a reusable hardware peripheral capable of generating PWM signals with programmable period and duty cycle, while allowing software running on the RISC-V processor to configure and monitor the peripheral through a memory-mapped register interface.
+
+The PWM IP was designed in **Verilog HDL** and implemented as an independent hardware module consisting of configurable control, period, duty cycle, and status registers. A PWM counter and waveform generation logic were developed to generate the required output signal based on the programmed register values. The peripheral was designed with modularity in mind, making it suitable for integration into larger FPGA or ASIC-based systems.
+
+After completing the RTL implementation, the PWM IP was functionally verified using a dedicated Verilog testbench. Simulation was performed using **Icarus Verilog**, while **GTKWave** was used to analyze the generated waveforms and verify the correct operation of the counter, register interface, and PWM output under different test conditions.
+
+The next stage involved integrating the PWM peripheral into the existing **RISC-V SoC** by implementing the required address decoding logic, memory-mapped interface, read/write data paths, and peripheral instantiation. Firmware was then developed in **C** to configure the PWM registers, perform register read/write verification, monitor the STATUS register, and validate communication between software and hardware through memory-mapped I/O.
+
+Finally, the complete SoC was synthesized and programmed onto the **VSDSquadron FM FPGA** development board. Hardware validation was carried out by routing the generated PWM signal to the onboard RGB LED and observing its behaviour under different duty-cycle configurations, demonstrating successful operation of the implemented PWM peripheral on physical hardware.
+
+### Key Highlights
+
+- Designed a standalone PWM IP using Verilog HDL.
+- Implemented configurable CTRL, PERIOD, DUTY, and STATUS registers.
+- Developed PWM counter and waveform generation logic.
+- Verified functionality through RTL simulation using Icarus Verilog.
+- Analyzed simulation waveforms using GTKWave.
+- Integrated the PWM peripheral into the RISC-V SoC using memory-mapped I/O.
+- Developed firmware for software-based validation of the peripheral.
+- Successfully synthesized and deployed the design on the VSDSquadron FM FPGA board.
+- Demonstrated hardware operation by controlling the onboard RGB LED using different PWM duty-cycle configurations.
 
 
 </details>
