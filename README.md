@@ -55,6 +55,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 | Task 4 | ✔ Completed |
 | Task 5 | ✔ Completed |
 | Task 6 | ✔ Completed |
+| IP_PWM | ✔ Completed |
 
 ---
 
@@ -66,6 +67,7 @@ This repository documents all tasks completed during the **RISC-V Based IP Desig
 - [Task 4: Design and Integrate your first Memory-mapped IO](Task4/README.md)
 - [Task 5: Design a Multi-Register GPIO IP with Software Control](Task5/README.md)
 - [Task 6: PWM IP design](Task6/README.md)
+- [IP_PWM: Commercial Grade PWM IP Packaging & Documentation](IP_PWM/README.md)
 ---
 
 # Task 1
@@ -592,6 +594,33 @@ Finally, the complete SoC was synthesized and programmed onto the **VSDSquadron 
 - Successfully synthesized and deployed the design on the VSDSquadron FM FPGA board.
 - Demonstrated hardware operation by controlling the onboard RGB LED using different PWM duty-cycle configurations.
 
+
+</details>
+
+---
+
+# IP_PWM
+
+<details>
+<summary><b>Task 6: Design a PWM IP</b></summary>
+
+### 📄 Detailed Documentation - It is in the IP_PWM folder of the repository
+
+👉 **[Click here to view the Task 6 Documentation](IP_PWM/README.md)**
+
+
+The **PWM (Pulse Width Modulation) IP** is a commercial-grade, memory-mapped peripheral developed for the **VSDSquadron RISC-V SoC** as part of the **VSDSquadron Internship Program**. The IP enables software-controlled generation of Pulse Width Modulation (PWM) signals through a simple 32-bit register interface, allowing the processor to configure the PWM period, duty cycle, output polarity, and operational state without modifying the hardware.
+
+Designed with modularity, reusability, and ease of integration in mind, the PWM IP can be incorporated into FPGA-based System-on-Chip (SoC) designs with minimal effort. It follows a memory-mapped architecture, making it accessible through standard register read and write operations from software executing on the RISC-V processor.
+
+This repository provides a complete commercial-style IP package, including the synthesizable Verilog RTL, software driver and validation program, comprehensive technical documentation, simulation evidence, and FPGA hardware validation. The documentation is organized to enable users to integrate, configure, test, and understand the peripheral without referring directly to the RTL implementation.
+
+The IP has been successfully validated through:
+- RTL simulation using **Icarus Verilog**, **VVP**, and **GTKWave**
+- Software-based functional verification on the RISC-V processor
+- FPGA hardware validation on the **VSDSquadron FPGA** by demonstrating real-time LED brightness control through programmable PWM duty cycles
+
+Whether used for educational purposes or as a reusable peripheral in FPGA-based embedded systems, this repository provides all the resources required to integrate and evaluate the PWM IP in a professional and reproducible manner.
 
 </details>
 
