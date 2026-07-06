@@ -117,12 +117,12 @@ The PWM IP has been successfully validated through:
 
 Simulation waveforms:
 
-➡ **[Waveforms](software/waveforms/)**
+➡ **[Waveforms](Software/waveforms/)**
 
 
 FPGA validation images:
 
-➡ **[FPGA Validation](software/FPGA_validation/)**
+➡ **[FPGA Validation](Software/FPGA_validation/)**
 
 
 ---
