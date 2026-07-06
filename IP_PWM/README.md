@@ -9,17 +9,11 @@
 
 ## Overview
 
-The **PWM (Pulse Width Modulation) IP** is a memory-mapped peripheral developed for the **VSDSquadron RISC-V SoC**. It generates a configurable PWM output that can be controlled entirely through software using memory-mapped registers.
+The PWM (Pulse Width Modulation) IP is a memory-mapped peripheral developed for the VSDSquadron RISC-V SoC.
 
-The peripheral allows software to configure:
+It provides software-controlled generation of PWM signals through a simple 32-bit register interface and is suitable for applications such as LED dimming, motor speed control, and general-purpose waveform generation.
 
-- PWM Enable/Disable
-- PWM Period
-- Duty Cycle
-- Output Polarity
-- Runtime Status Monitoring
-
-The IP was successfully verified through RTL simulation, software validation, and FPGA hardware testing.
+The IP has been validated through RTL simulation, software verification, and FPGA hardware testing.
 
 ---
 
@@ -40,25 +34,12 @@ The IP was successfully verified through RTL simulation, software validation, an
 
 # Repository Structure
 
-```
+```text
 ip/
 └── pwm/
     ├── rtl/
-    │   ├── pwm.v
-    │   └── README.md
-    │
     ├── software/
-    │   ├── pwm_test.c
-    │   └── Software_Guide.md
-    │
     ├── docs/
-    │   ├── IP_User_Guide.md
-    │   ├── Register_Map.md
-    │   ├── Integration_Guide.md
-    │   └── Example_Usage.md
-    │
-    ├── images/
-    │
     └── README.md
 ```
 
@@ -68,7 +49,7 @@ ip/
 
 The PWM IP is integrated into the VSDSquadron SoC as a memory-mapped peripheral.
 
-### Integration Steps
+### Integration Steps 
 
 1. Copy `pwm.v` into the RTL project.
 2. Instantiate the PWM module inside `riscv.v`.
@@ -127,53 +108,22 @@ Software documentation is available in:
 ---
 
 # Validation
-📂 **Simulation Waveforms:** [software/waveforms](Software/waveforms/)
 
-The PWM IP has been validated through:
+The PWM IP has been successfully validated through:
 
-### RTL Simulation
+- RTL Simulation (Icarus Verilog, VVP, GTKWave)
+- Software Validation on the RISC-V processor
+- FPGA Hardware Demonstration on the VSDSquadron FPGA
 
-Verified using:
+Simulation waveforms:
 
-- Icarus Verilog
-- VVP
-- GTKWave
+➡ **[Waveforms](software/waveforms/)**
 
-Validation includes:
 
-- Register Read/Write
-- Address Decoding
-- Counter Operation
-- PWM Generation
-- Boundary Conditions
+FPGA validation images:
 
----
+➡ **[FPGA Validation](software/FPGA_validation/)**
 
-### Software Validation
-
-The supplied software automatically verifies:
-
-- Default Register Values
-- PERIOD Register
-- DUTY Register
-- CTRL Register
-- STATUS Register
-- Boundary Conditions
-- Counter Monitoring
-- Enable/Disable Operation
-
----
-
-### FPGA Validation
-
-The PWM output was connected to an on-board LED of the VSDSquadron FPGA.
-
-Hardware verification confirmed:
-
-- Successful PWM generation
-- Correct register operation
-- LED brightness control using duty cycle variation
-- UART-based PASS/FAIL reporting
 
 ---
 
