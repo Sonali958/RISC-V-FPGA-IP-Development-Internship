@@ -1,23 +1,31 @@
 # Register Map
 
-## Overview
+## PWM IP Register Map
 
-The PWM IP is controlled through a set of 32-bit memory-mapped registers. These registers allow software running on the RISC-V processor to configure the PWM output, monitor its status, and control its operation.
+**Version:** 1.0
 
-All registers are word-aligned and support 32-bit accesses.
+**Target Platform:** VSDSquadron FPGA SoC
 
-**Base Address:** `PWM_BASE` (Assigned during SoC integration)
+---
+
+# Overview
+
+The PWM IP is controlled through four 32-bit memory-mapped registers. These registers allow software running on the RISC-V processor to configure the PWM output, control its operation, and monitor its runtime status.
+
+All registers are word-aligned and support 32-bit read and write transactions.
+
+**Base Address:** Assigned during SoC integration.
 
 ---
 
 # Register Summary
 
 | Offset | Register | Access | Description |
-|---------|----------|:------:|-------------|
-| `0x00` | CTRL | R/W | PWM control register (Enable and Polarity) |
-| `0x04` | PERIOD | R/W | PWM period value (clock cycles) |
-| `0x08` | DUTY | R/W | PWM high-time value (clock cycles) |
-| `0x0C` | STATUS | R | PWM running status and counter value |
+|:------:|:--------:|:------:|-------------|
+| **0x00** | **CTRL** | R/W | PWM enable and polarity control |
+| **0x04** | **PERIOD** | R/W | PWM period in clock cycles |
+| **0x08** | **DUTY** | R/W | PWM high-time in clock cycles |
+| **0x0C** | **STATUS** | R | Running status and current counter value |
 
 ---
 
@@ -25,37 +33,49 @@ All registers are word-aligned and support 32-bit accesses.
 
 Controls the overall operation of the PWM peripheral.
 
-### Bit Fields
+## Bit Fields
 
-| Bits | Name | Access | Reset | Description |
-|------|------|:------:|:-----:|-------------|
-| 0 | EN | R/W | 0 | Enables PWM output (1 = Enabled, 0 = Disabled) |
-| 1 | POL | R/W | 0 | PWM Polarity (0 = Active High, 1 = Active Low) |
-| 31:2 | Reserved | - | 0 | Reserved. Writes are ignored. Reads return 0. |
+| Bits | Field | Access | Reset | Description |
+|------|-------|:------:|:-----:|-------------|
+|0|EN|R/W|0|PWM Enable (1 = Enabled, 0 = Disabled)|
+|1|POL|R/W|0|Output Polarity (0 = Active High, 1 = Active Low)|
+|31:2|Reserved|-|0|Reserved. Writes are ignored and reads return zero.|
 
-### Reset Value
+## Reset Value
 
 ```
 0x00000000
 ```
 
+## Notes
+
+- EN = 0 disables PWM output.
+- EN = 1 enables PWM generation.
+- POL changes the output polarity without affecting the internal PWM timing.
+
 ---
 
 # PERIOD Register (Offset: 0x04)
 
-Stores the PWM period in clock cycles.
+Stores the PWM period measured in system clock cycles.
 
-### Bit Fields
+## Bit Fields
 
-| Bits | Name | Access | Reset | Description |
-|------|------|:------:|:-----:|-------------|
-|31:0|PERIOD|R/W|0|Total PWM period in clock ticks|
+| Bits | Field | Access | Reset | Description |
+|------|-------|:------:|:-----:|-------------|
+|31:0|PERIOD|R/W|0|PWM period value|
 
-### Notes
+## Reset Value
+
+```
+0x00000000
+```
+
+## Notes
 
 - Minimum valid value is **1**.
-- PWM counter increments from **0** to **PERIOD − 1**.
-- Larger values produce lower PWM frequency.
+- Counter counts from **0** to **PERIOD − 1**.
+- Increasing PERIOD reduces the PWM frequency.
 
 ---
 
@@ -63,80 +83,152 @@ Stores the PWM period in clock cycles.
 
 Defines the HIGH duration of the PWM output.
 
-### Bit Fields
+## Bit Fields
 
-| Bits | Name | Access | Reset | Description |
-|------|------|:------:|:-----:|-------------|
-|31:0|DUTY|R/W|0|PWM high-time in clock ticks|
+| Bits | Field | Access | Reset | Description |
+|------|-------|:------:|:-----:|-------------|
+|31:0|DUTY|R/W|0|PWM HIGH time|
 
-### Notes
+## Reset Value
+
+```
+0x00000000
+```
+
+## Output Behaviour
 
 | Condition | PWM Output |
 |------------|------------|
-| DUTY = 0 | Always LOW |
-| 0 < DUTY < PERIOD | Normal PWM |
-| DUTY ≥ PERIOD | Always HIGH |
+|DUTY = 0|Always LOW|
+|0 < DUTY < PERIOD|Normal PWM|
+|DUTY ≥ PERIOD|Always HIGH|
 
-If polarity inversion is enabled (POL = 1), the output logic is inverted.
+When the POL bit is set, the output waveform is inverted.
 
 ---
 
 # STATUS Register (Offset: 0x0C)
 
-Provides status information for software debugging and runtime monitoring.
+Provides runtime information for software monitoring.
 
-### Bit Fields
+## Bit Fields
 
-| Bits | Name | Access | Reset | Description |
-|------|------|:------:|:-----:|-------------|
-|0|RUNNING|R|0|Indicates whether PWM is enabled|
+| Bits | Field | Access | Reset | Description |
+|------|-------|:------:|:-----:|-------------|
+|0|RUNNING|R|0|Reflects the PWM Enable state|
 |15:1|Reserved|-|0|Reserved|
 |31:16|COUNTER|R|0|Current PWM counter value|
 
+## Reset Value
+
+```
+0x00000000
+```
+
+## Notes
+
+- RUNNING becomes **1** whenever PWM is enabled.
+- COUNTER continuously increments while PWM is running.
+- Software may periodically read STATUS for debugging or monitoring purposes.
+
 ---
 
-# Register Access Sequence
+# Register Programming Sequence
 
 Typical software initialization sequence:
 
-1. Write the desired PWM period to the **PERIOD** register.
-2. Write the desired duty cycle to the **DUTY** register.
-3. Configure polarity if required using the **CTRL** register.
-4. Set the **EN** bit in the **CTRL** register.
-5. Optionally monitor the **STATUS** register to verify operation.
+1. Disable PWM.
+
+```c
+IO_OUT(REG_PWM_CONTROL,0);
+```
+
+2. Configure the PWM period.
+
+```c
+IO_OUT(REG_PWM_PERIOD_VAL,100);
+```
+
+3. Configure the PWM duty cycle.
+
+```c
+IO_OUT(REG_PWM_DUTY_VAL,50);
+```
+
+4. Enable PWM.
+
+```c
+IO_OUT(REG_PWM_CONTROL,1);
+```
+
+5. Read the STATUS register if runtime monitoring is required.
+
+```c
+status = IO_IN(REG_PWM_STATUS);
+```
 
 ---
 
-# Read/Write Behavior
+# Read/Write Behaviour
 
-| Register | Read | Write |
-|----------|------|-------|
-| CTRL | Returns current control settings | Updates enable and polarity |
-| PERIOD | Returns programmed period | Updates PWM period |
-| DUTY | Returns programmed duty cycle | Updates PWM duty cycle |
-| STATUS | Returns running status and counter value | Read Only |
+| Register | Read Behaviour | Write Behaviour |
+|----------|----------------|-----------------|
+|CTRL|Returns enable and polarity configuration|Updates enable and polarity bits|
+|PERIOD|Returns programmed period|Updates PWM period|
+|DUTY|Returns programmed duty cycle|Updates HIGH time|
+|STATUS|Returns RUNNING flag and counter value|Read Only|
 
 ---
 
-# Reset Behavior
+# Reset Behaviour
 
-After system reset:
+After a system reset:
 
 | Register | Reset Value |
 |----------|-------------|
-| CTRL | 0x00000000 |
-| PERIOD | 0x00000000 |
-| DUTY | 0x00000000 |
-| STATUS | 0x00000000 |
+|CTRL|0x00000000|
+|PERIOD|0x00000000|
+|DUTY|0x00000000|
+|STATUS|0x00000000|
 
-The PWM output remains disabled until software explicitly configures and enables the peripheral.
+Following reset:
+
+- PWM output is disabled.
+- Counter is cleared.
+- Output polarity defaults to Active High.
+- Software must configure the peripheral before PWM generation begins.
 
 ---
 
 # Functional Notes
 
-- Registers are memory-mapped and accessed using standard 32-bit read/write operations.
-- Undefined register offsets return **0x00000000**.
+- Registers are accessed using standard 32-bit memory-mapped transactions.
+- Reads from undefined register offsets return **0x00000000**.
 - Writes to undefined register offsets are ignored.
-- The STATUS register is intended for software monitoring and debugging.
-- The PWM output is generated only when the **EN** bit is set.
+- STATUS is intended for runtime monitoring and debugging.
+- DUTY may be modified while PWM is running, allowing smooth real-time brightness control without disabling the peripheral.
+- The PWM output is generated only when the EN bit is asserted.
+
+---
+
+# Register Access Summary
+
+```
+CTRL
+ │
+ ├── Enable PWM
+ └── Select Output Polarity
+
+PERIOD
+ │
+ └── Set PWM Frequency
+
+DUTY
+ │
+ └── Set Duty Cycle
+
+STATUS
+ │
+ ├── Read RUNNING Flag
+ └── Read Current Counter Value
+```
