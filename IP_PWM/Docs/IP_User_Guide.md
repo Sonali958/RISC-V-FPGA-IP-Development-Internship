@@ -8,7 +8,7 @@
 
 **Target Platform:** VSDSquadron FPGA SoC
 
-**Bus Interface:** Memory-Mapped 32-bit Register Interface
+**Bus Interface:** 32-bit Memory-Mapped Register Interface
 
 ---
 
@@ -16,7 +16,7 @@
 
 1. Introduction
 2. IP Overview
-3. Features
+3. Feature Summary
 4. Applications
 5. System Architecture
 6. Functional Description
@@ -26,16 +26,17 @@
 10. Validation
 11. Known Limitations
 12. Future Improvements
+13. Related Documents
 
 ---
 
 # 1. Introduction
 
-The PWM (Pulse Width Modulation) IP is a reusable hardware peripheral designed for the VSDSquadron RISC-V SoC. It generates a configurable PWM waveform by varying the ratio of HIGH and LOW durations while maintaining a programmable period.
+The PWM (Pulse Width Modulation) IP is a reusable hardware peripheral designed for the VSDSquadron RISC-V SoC. It generates a programmable PWM waveform by varying the duty cycle while maintaining a configurable output period.
 
-The peripheral is memory mapped, allowing software running on the RISC-V processor to configure and control the PWM output through simple register accesses.
+The peripheral is fully memory-mapped, allowing software running on the RISC-V processor to configure PWM parameters through simple register accesses without modifying the hardware implementation.
 
-This IP has been designed with modularity, readability, and portability in mind, enabling straightforward integration into FPGA-based SoC designs.
+The IP is intended to be modular, reusable, and easy to integrate into FPGA-based System-on-Chip designs.
 
 ---
 
@@ -43,34 +44,35 @@ This IP has been designed with modularity, readability, and portability in mind,
 
 ## Purpose
 
-The purpose of this IP is to generate a programmable PWM signal suitable for controlling external devices requiring variable duty cycles.
+The PWM IP generates a programmable pulse-width modulated signal suitable for applications requiring adjustable output power or brightness.
 
-Software configures the peripheral by writing to memory-mapped registers without modifying the hardware implementation.
+The peripheral is configured entirely through software by writing to memory-mapped control registers.
 
 ---
 
 ## Typical Use Cases
 
 - LED Brightness Control
-- Servo Motor Positioning
+- Servo Motor Control
 - DC Motor Speed Control
-- Audio Signal Generation
+- Audio Tone Generation
 - Power Electronics
-- Digital Control Systems
 - FPGA Learning Projects
+- Embedded Control Systems
 
 ---
 
 ## Why Use This IP?
 
-This PWM peripheral provides:
+The PWM peripheral provides:
 
-- Simple software-controlled operation
-- Fully memory-mapped register interface
-- Easy integration into VSDSquadron SoC
-- Low hardware resource utilization
-- Real-time duty cycle updates
-- Reusable and modular RTL implementation
+- Memory-mapped software interface
+- Programmable period and duty cycle
+- Runtime duty-cycle updates
+- Output polarity control
+- Compact RTL implementation
+- Easy integration into the VSDSquadron SoC
+- Low FPGA resource utilization
 
 ---
 
@@ -78,49 +80,49 @@ This PWM peripheral provides:
 
 | Feature | Description |
 |----------|-------------|
-| Channels | Single PWM Output |
-| Bus Width | 32-bit |
-| Register Interface | Memory-Mapped |
+| PWM Channels | 1 |
+| Register Width | 32-bit |
+| Bus Interface | Memory-Mapped |
 | Period Control | Supported |
 | Duty Cycle Control | Supported |
-| Enable/Disable | Supported |
+| Enable / Disable | Supported |
 | Polarity Inversion | Supported |
 | Status Register | Supported |
 | Counter Monitoring | Supported |
-| Clock | System Clock |
-| FPGA Compatible | VSDSquadron FPGA |
+| Clock Source | System Clock |
+| FPGA Target | VSDSquadron FPGA |
 
 ---
 
 # 4. System Architecture
 
 ```
-                  CPU
-                   │
-         Memory-Mapped Bus
-                   │
-          Address Decoder
-                   │
-          +----------------+
-          |   PWM IP Core  |
-          +----------------+
-           │      │      │
+                   CPU
+                    │
+          Memory-Mapped Bus
+                    │
+           Address Decoder
+                    │
+           +----------------+
+           |    PWM IP Core |
+           +----------------+
+             │     │      │
       Registers Counter PWM Logic
-                   │
-               pwm_out
-                   │
-             LED / GPIO Pin
+                    │
+                 pwm_out
+                    │
+               LED / GPIO
 ```
 
 ---
 
 # 5. Functional Description
 
-The PWM IP generates a pulse-width modulated signal by comparing an internal counter with a programmable duty-cycle value.
+The PWM IP generates its output waveform by comparing an internal counter with the programmed duty-cycle value.
 
-The counter continuously increments from zero to the configured PERIOD value.
+The internal counter continuously increments from **0** to **PERIOD − 1**.
 
-If
+When
 
 ```
 Counter < DUTY
@@ -134,25 +136,28 @@ Otherwise,
 Counter ≥ DUTY
 ```
 
-the PWM output becomes LOW.
+the output becomes LOW.
 
-The sequence repeats continuously while the PWM is enabled.
+After reaching the programmed period, the counter wraps back to zero and the process repeats continuously while the PWM is enabled.
 
-If polarity inversion is enabled, the generated waveform is inverted before reaching the output.
+If the polarity bit is enabled, the generated waveform is inverted before driving the output pin.
 
 ---
 
-# PWM Generation
+## PWM Generation
 
 ```
 Counter
 
-0 -----------------------> PERIOD-1
+0 --------------------------> PERIOD-1
 
-          Counter < DUTY
+Counter < DUTY
 
-HIGH HIGH HIGH HIGH LOW LOW LOW LOW
+████████░░░░░░░░
+ HIGH      LOW
 ```
+
+Changing the DUTY register changes the pulse width without modifying the output frequency.
 
 ---
 
@@ -167,13 +172,13 @@ The PWM peripheral exposes four memory-mapped registers.
 |0x08|DUTY|PWM High Time|
 |0x0C|STATUS|Running Status and Counter|
 
-A detailed description of every register is available in **Register_Map.md**.
+Detailed register descriptions, bit fields, reset values, and read/write behavior are available in **Register_Map.md**.
 
 ---
 
 # 7. Software Programming Model
 
-The peripheral is entirely software configurable.
+The peripheral is configured entirely through software.
 
 A typical initialization sequence is shown below.
 
@@ -182,7 +187,7 @@ A typical initialization sequence is shown below.
 Configure the PWM period.
 
 ```c
-IO_OUT(IO_PWM_PERIOD,100);
+IO_OUT(REG_PWM_PERIOD_VAL,100);
 ```
 
 ---
@@ -192,72 +197,92 @@ IO_OUT(IO_PWM_PERIOD,100);
 Configure the duty cycle.
 
 ```c
-IO_OUT(IO_PWM_DUTY,50);
+IO_OUT(REG_PWM_DUTY_VAL,50);
 ```
 
 ---
 
 ### Step 3
 
-Enable PWM.
+Enable the PWM peripheral.
 
 ```c
-IO_OUT(IO_PWM_CTRL,1);
+IO_OUT(REG_PWM_CONTROL,1);
 ```
 
 ---
 
 ### Step 4
 
-Optionally monitor the STATUS register.
+Read the status register (optional).
 
 ```c
-status = IO_IN(IO_PWM_STATUS);
+status = IO_IN(REG_PWM_STATUS);
 ```
 
 ---
 
-# Software Flow
+## Software Flow
 
 ```
 Start
 
-↓
+   │
+
+   ▼
 
 Configure PERIOD
 
-↓
+   │
+
+   ▼
 
 Configure DUTY
 
-↓
+   │
+
+   ▼
 
 Configure POL (Optional)
 
-↓
+   │
+
+   ▼
 
 Enable PWM
 
-↓
+   │
 
-Monitor STATUS
+   ▼
 
-↓
+Read STATUS
+
+   │
+
+   ▼
+
+Update DUTY (Runtime)
+
+   │
+
+   ▼
 
 PWM Running
 ```
+
+The supplied demonstration firmware continuously varies the duty cycle to create a smooth LED fading effect and periodically switches the PWM output polarity.
 
 ---
 
 # 8. Board-Level Usage
 
-The PWM output is exposed as
+The PWM output signal
 
 ```
 pwm_out
 ```
 
-The signal may be connected to:
+may be connected to:
 
 - On-board LED
 - GPIO Header
@@ -267,15 +292,15 @@ The signal may be connected to:
 
 During hardware validation, the PWM output was connected to an on-board LED.
 
-Changing the DUTY register changed the LED brightness.
+The firmware continuously updated the DUTY register, producing a smooth fade-in and fade-out effect.
 
-Example
+Example LED behaviour:
 
-| Duty | LED Brightness |
-|------|----------------|
+| Duty Cycle | LED Behaviour |
+|-------------|---------------|
 |0%|OFF|
 |25%|Dim|
-|50%|Medium|
+|50%|Medium Brightness|
 |75%|Bright|
 |100%|Fully ON|
 
@@ -283,48 +308,52 @@ Example
 
 # 9. Validation
 
-The PWM IP was validated through multiple stages.
+The PWM IP was validated through simulation, software execution, and FPGA implementation.
 
-## Functional Simulation
+## RTL Simulation
 
-Verified:
+Simulation verified:
 
-- Register Read/Write
-- Counter Operation
-- PWM Waveform
-- Enable/Disable Logic
-- Duty Cycle Operation
-- Boundary Conditions
+- Register read operations
+- Register write operations
+- PWM counter functionality
+- PWM waveform generation
+- Enable/Disable control
+- Polarity inversion
+- Memory-mapped register interface
 
-Waveforms were inspected using GTKWave.
+Waveforms were analyzed using GTKWave.
 
 ---
 
 ## Software Validation
 
-The supplied software performs:
+The supplied firmware demonstrates:
 
-- Default Register Verification
-- Register Read/Write Tests
-- Enable Verification
-- Status Verification
-- Boundary Tests
-- Counter Monitoring
-- Disable Verification
+- PWM initialization
+- Register configuration
+- STATUS register monitoring
+- Continuous duty-cycle updates
+- LED fade-in operation
+- LED fade-out operation
+- Runtime polarity switching
+- Continuous PWM generation
 
-All software tests completed successfully.
+UART output reports the current operating mode, programmed duty cycle, and status register values during execution.
 
 ---
 
 ## FPGA Validation
 
-Hardware validation was performed on the VSDSquadron FPGA board.
+The complete SoC was synthesized and programmed onto the VSDSquadron FPGA board.
 
-Observed behavior:
+Observed hardware behaviour:
 
-- PWM output generated successfully.
-- LED brightness varied according to DUTY value.
-- UART displayed successful execution of all software tests.
+- PWM output generated successfully
+- LED brightness varied smoothly with duty cycle
+- UART displayed peripheral status information
+- Active-High and Active-Low modes operated correctly
+- Continuous operation confirmed stable hardware functionality
 
 ---
 
@@ -333,14 +362,14 @@ Observed behavior:
 Current implementation limitations include:
 
 - Single PWM output channel
-- No interrupt generation
-- No prescaler support
+- No interrupt support
+- No prescaler
 - No dead-time insertion
 - Frequency depends on the system clock
 - No complementary PWM outputs
 - Fixed 32-bit register interface
 
-These limitations were intentionally kept to maintain a simple and educational implementation.
+These design choices intentionally keep the peripheral compact and easy to understand.
 
 ---
 
@@ -355,7 +384,7 @@ Potential future enhancements include:
 - Complementary PWM outputs
 - Dead-time insertion
 - DMA support
-- Runtime frequency measurement
+- Runtime frequency adjustment
 - Hardware fault protection
 
 ---
@@ -364,15 +393,15 @@ Potential future enhancements include:
 
 This IP package includes:
 
-- **README.md**
-- **Register_Map.md**
-- **Integration_Guide.md**
-- **Example_Usage.md**
+- README.md
+- Register_Map.md
+- Integration_Guide.md
+- Example_Usage.md
 
-Together, these documents provide complete information for integrating, programming, and validating the PWM IP on the VSDSquadron FPGA platform.
+Together these documents provide complete information for integrating, programming, validating, and using the PWM IP on the VSDSquadron FPGA platform.
 
 ---
 
 # Conclusion
 
-The PWM IP provides a compact, configurable, and reusable pulse-width modulation peripheral for FPGA-based RISC-V SoC designs. Through its memory-mapped register interface, software can easily configure PWM parameters such as period, duty cycle, polarity, and enable control. Its modular design, comprehensive documentation, and successful validation on both simulation and FPGA hardware make it suitable for educational projects and as a foundation for more advanced PWM-based control systems.
+The PWM IP provides a compact, configurable, and reusable pulse-width modulation peripheral for FPGA-based RISC-V SoC designs. Through its memory-mapped register interface, software can configure the PWM period, duty cycle, polarity, and enable control while monitoring runtime status. Successful validation through RTL simulation, software execution, and FPGA implementation demonstrates reliable operation, making the IP suitable for educational projects and as a foundation for more advanced PWM-based control systems.
