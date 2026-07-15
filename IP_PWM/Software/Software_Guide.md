@@ -1,12 +1,20 @@
 # PWM Software Guide
 
-## Overview
+## Version
 
-This directory contains the reference software application for the PWM IP developed for the VSDSquadron FPGA RISC-V SoC.
+1.0
 
-The software demonstrates how to configure, control, and validate the PWM peripheral through its memory-mapped register interface. It serves both as a functional example and as a hardware verification program for the integrated PWM IP.
+**Target Platform:** VSDSquadron FPGA SoC
 
-The example application is intended to run directly on the VSDSquadron RISC-V processor without requiring any modifications to the RTL implementation.
+---
+
+# Overview
+
+This directory contains the reference software application for the PWM IP integrated into the VSDSquadron RISC-V SoC.
+
+The application demonstrates how to configure and control the PWM peripheral through its memory-mapped register interface. It also provides a practical example of runtime duty-cycle adjustment, status monitoring, UART reporting, and polarity switching.
+
+The software is intended to run directly on the embedded RISC-V processor without requiring any modification to the PWM hardware.
 
 ---
 
@@ -15,30 +23,32 @@ The example application is intended to run directly on the VSDSquadron RISC-V pr
 ```
 software/
 ├── pwm_test.c
+├── io.h
 └── Software_Guide.md
 ```
 
 | File | Description |
 |------|-------------|
-| `pwm_test.c` | Complete reference software demonstrating configuration and validation of the PWM IP |
-| `Software_Guide.md` | Documentation for compiling, executing, and understanding the software example |
+|`pwm_test.c`|Reference PWM demonstration application|
+|`io.h`|Memory-mapped register definitions|
+|`Software_Guide.md`|Software documentation|
 
 ---
 
 # Software Objectives
 
-The software demonstrates the following capabilities:
+The reference application demonstrates:
 
-- Initialization of the PWM peripheral
+- PWM peripheral initialization
 - Memory-mapped register programming
-- Register read/write verification
-- PWM enable and disable operation
-- Duty cycle configuration
+- PWM enable and disable
 - Period configuration
-- Status register monitoring
-- Boundary condition testing
-- Live counter monitoring
-- UART-based reporting of validation results
+- Duty-cycle configuration
+- STATUS register monitoring
+- UART status reporting
+- Runtime duty-cycle updates
+- Active-High PWM mode
+- Active-Low PWM mode
 
 ---
 
@@ -47,225 +57,254 @@ The software demonstrates the following capabilities:
 - VSDSquadron FPGA Board
 - Integrated PWM IP
 - RISC-V SoC
-- UART Interface
+- USB-UART Adapter
 - On-board LED
 
 ---
 
 # Software Requirements
 
-The following software tools are required:
+Required development tools:
 
 - RISC-V GCC Toolchain
-- Make Utility
-- UART Terminal (PuTTY, Minicom, Tera Term, etc.)
+- Make
+- UART Terminal (Picocom, Minicom, PuTTY, Tera Term)
 
 ---
 
-# Building the Application
+# Building the Software
 
-Compile the software using the VSDSquadron software environment.
-
-Example:
+Compile the firmware.
 
 ```bash
 make
 ```
 
-This generates the executable that is loaded onto the RISC-V processor.
+The generated executable is loaded into the RISC-V processor memory.
 
 ---
 
 # Running the Application
 
-1. Program the FPGA with the integrated SoC design.
-2. Load the compiled executable into the RISC-V system.
-3. Open the UART terminal.
+1. Program the FPGA.
+2. Load the firmware.
+3. Connect the UART terminal.
 4. Reset the processor.
-5. Execute the application.
-6. Observe the UART output.
-7. Observe the LED connected to `pwm_out`.
+5. Observe UART messages.
+6. Observe the LED brightness.
 
 ---
 
 # Software Operation
 
-The application configures the PWM peripheral using memory-mapped register accesses.
-
-The initialization sequence is shown below.
+The firmware performs the following sequence.
 
 ```
-System Reset
+Reset PWM
+
       │
+
       ▼
-Read Default Registers
+
+Configure PERIOD
+
       │
+
       ▼
-Configure PWM Period
+
+Configure DUTY
+
       │
+
       ▼
-Configure PWM Duty Cycle
-      │
-      ▼
+
 Enable PWM
+
       │
+
       ▼
-Read Status Register
+
+Read STATUS
+
       │
+
       ▼
-Execute Validation Tests
+
+Increase Duty Cycle
+
       │
+
       ▼
-Display Test Results
+
+Decrease Duty Cycle
+
+      │
+
+      ▼
+
+Disable PWM
+
+      │
+
+      ▼
+
+Toggle Output Polarity
+
+      │
+
+      ▼
+
+Repeat
 ```
 
 ---
 
-# Validation Tests
+# Register Programming
 
-The application automatically performs the following tests.
+The PWM peripheral is configured using memory-mapped register writes.
 
-| Test | Description |
-|------|-------------|
-| Test 1 | Verify default register values |
-| Test 2 | Verify PERIOD register |
-| Test 3 | Verify DUTY register |
-| Test 4 | Verify CTRL register |
-| Test 5 | Verify STATUS register |
-| Test 6 | Boundary Test (DUTY = 0) |
-| Test 7 | Boundary Test (DUTY = PERIOD) |
-| Test 8 | Boundary Test (DUTY > PERIOD) |
-| Test 9 | Counter Monitoring |
-| Test 10 | Disable PWM |
-
-Each test reports either **PASS** or **FAIL** through the UART interface.
-
----
-
-# Register Programming Sequence
-
-The PWM peripheral is programmed using the following register write sequence.
+Disable PWM
 
 ```c
-IO_OUT(IO_PWM_PERIOD, PERIOD_VAL);
-IO_OUT(IO_PWM_DUTY, DUTY_VAL);
-IO_OUT(IO_PWM_CTRL, PWM_EN);
+IO_OUT(REG_PWM_CONTROL,0);
 ```
 
-The STATUS register can then be read to monitor the running state of the peripheral.
+Configure the period
 
 ```c
-status = IO_IN(IO_PWM_STATUS);
+IO_OUT(REG_PWM_PERIOD_VAL,100);
+```
+
+Configure the duty cycle
+
+```c
+IO_OUT(REG_PWM_DUTY_VAL,50);
+```
+
+Enable PWM
+
+```c
+IO_OUT(REG_PWM_CONTROL,1);
+```
+
+Read STATUS
+
+```c
+status = IO_IN(REG_PWM_STATUS);
 ```
 
 ---
 
-# Expected UART Output
+# Runtime Demonstration
 
-A successful execution produces output similar to:
+After initialization, the firmware automatically
+
+- increases duty cycle from 0% to 100%
+- decreases duty cycle from 100% to 0%
+- disables PWM
+- switches output polarity
+- repeats continuously
+
+This produces a smooth LED fade effect.
+
+---
+
+# UART Output
+
+Typical UART output
 
 ```text
-PWM TEST START
+=====================================
+        PWM IP SOFTWARE TEST
+=====================================
 
-PWM SOFTWARE TEST
+PWM ENABLED
 
-TEST1 Default Registers
-[PASS]
+Mode : ACTIVE HIGH
+Period : 100
+Status : 0x00000001
 
-TEST2 PERIOD
-[PASS]
+Increasing Duty Cycle
 
-TEST3 DUTY
-[PASS]
+Duty = 0
+Duty = 10
+Duty = 20
+...
+Duty = 100
 
-TEST4 CTRL
-[PASS]
+Decreasing Duty Cycle
 
-TEST5 STATUS
-[PASS]
+Duty = 100
+...
+Duty = 0
 
-TEST6 DUTY=0
-[PASS]
+PWM DISABLED
 
-TEST7 DUTY=PERIOD
-[PASS]
-
-TEST8 DUTY>PERIOD
-[PASS]
-
-TEST9 MONITOR
-[PASS]
-
-TEST10 DISABLE
-[PASS]
-
-RESULT
-
-PASS : 10
-FAIL : 0
-
-PWM VERIFIED
+Switching PWM Polarity...
 ```
+
+The sequence repeats in Active-Low mode.
 
 ---
 
 # Expected Hardware Behaviour
 
-After the software configures the PWM peripheral:
+When executed successfully,
 
-- The PWM output becomes active.
-- The STATUS register indicates that the PWM is running.
-- The internal counter continuously increments.
-- The LED connected to `pwm_out` changes brightness according to the programmed duty cycle.
-- Disabling the PWM forces the output to its inactive state.
+- PWM output becomes active.
+- LED brightness gradually increases.
+- LED brightness gradually decreases.
+- STATUS register reflects peripheral activity.
+- UART reports duty-cycle updates.
+- PWM polarity changes after every complete fade cycle.
 
 ---
 
-# Duty Cycle Demonstration
+# LED Behaviour
 
-| Duty Cycle | Expected LED Behaviour |
-|------------|------------------------|
-| 0% | LED OFF |
-| 25% | Dim |
-| 50% | Medium Brightness |
-| 75% | Bright |
-| 100% | Fully ON |
+| Duty Cycle | LED Behaviour |
+|------------|---------------|
+|0%|OFF|
+|10%|Very Dim|
+|25%|Dim|
+|50%|Medium Brightness|
+|75%|Bright|
+|100%|Fully ON|
 
 ---
 
 # Error Conditions
 
-| Condition | Expected Behaviour |
-|-----------|-------------------|
-| PERIOD = 0 | PWM remains disabled or undefined (avoid configuration) |
-| DUTY = 0 | Output remains LOW |
-| DUTY = PERIOD | Output remains HIGH |
-| DUTY > PERIOD | Output remains HIGH according to implemented logic |
-| CTRL.EN = 0 | PWM output disabled |
+| Condition | Behaviour |
+|-----------|-----------|
+|PERIOD = 0|Invalid configuration|
+|DUTY = 0|Output remains LOW|
+|DUTY ≥ PERIOD|Output remains HIGH|
+|PWM Disabled|Output inactive|
+|Incorrect UART Configuration|No terminal output|
 
 ---
 
 # Verification Summary
 
-The software verifies:
+The software demonstrates
 
-- Correct memory-mapped communication
-- Register read/write operations
-- PWM configuration
-- Counter operation
-- STATUS register functionality
-- Boundary condition handling
+- Register programming
+- Memory-mapped communication
+- PWM generation
+- Runtime duty-cycle updates
+- STATUS monitoring
 - UART communication
-- Hardware operation on the FPGA
+- LED brightness control
+- Active-High and Active-Low operation
 
 ---
 
 # Related Documentation
 
-Additional documentation is available in:
-
 ```
 docs/
+├── README.md
 ├── IP_User_Guide.md
 ├── Register_Map.md
 ├── Integration_Guide.md
@@ -276,4 +315,4 @@ docs/
 
 # Conclusion
 
-The provided software serves as a complete reference application for the PWM IP. It demonstrates peripheral initialization, register configuration, runtime monitoring, and functional validation on both simulation and the VSDSquadron FPGA platform. The application can be used directly for verification or as a foundation for developing custom PWM-based embedded applications.
+The supplied software provides a complete reference implementation for operating the PWM IP on the VSDSquadron RISC-V SoC. It demonstrates initialization, runtime configuration, duty-cycle modulation, polarity control, UART status reporting, and FPGA validation, making it a practical starting point for integrating the PWM peripheral into embedded applications.
